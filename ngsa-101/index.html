@@ -1,1 +1,102 @@
-<!-- NGSA-101 course placeholder -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NGSA-101 | NextGenAI SIS Academy</title>
+<style>
+body{margin:0;background:#0b1424;color:#eef4ff;font:16px system-ui,sans-serif}
+header,main{padding:20px;max-width:720px;margin:auto}
+header{border-bottom:2px solid #19b9e7}
+h1{font-size:26px}
+section{background:#18263b;padding:18px;border-radius:12px;margin:16px 0}
+button{background:#19b9e7;color:#071320;border:0;border-radius:8px;padding:13px;margin:5px 5px 5px 0;font-weight:bold;cursor:pointer}
+textarea{box-sizing:border-box;width:100%;height:145px;background:#08111f;color:#b8f7d0;border:1px solid #65758b;border-radius:8px;padding:12px;font:14px monospace}
+pre{white-space:pre-wrap}
+small{color:#afc1d6}
+</style>
+</head>
+<body>
+<header>
+<h1>NextGenAI SIS Academy</h1>
+<p>NGSA-101 | AI Systems Operations</p>
+</header>
+<main>
+<section>
+<h2>Lesson 1: AI Agent Operations</h2>
+<p>Learn how an AI agent receives a resource request, recommends an action, and waits for human approval.</p>
+<button id="play">▶ Play Lesson</button>
+<p id="lesson">Ready to begin.</p>
+</section>
+<section>
+<h2>Python Lab 1</h2>
+<p>Create a resource request using Python.</p>
+<small>Try editing the code below.</small>
+<textarea id="code" spellcheck="false">request = "inventory"
+status = "pending"
+print(request)
+print(status)</textarea>
+<button id="run">Run Lab Check</button>
+<pre id="output" aria-live="polite"></pre>
+</section>
+<section>
+<h2>Knowledge Assessment</h2>
+<p>Who has final authority to approve an AI agent's operational action?</p>
+<button id="human">Human Operator</button>
+<button id="agent">AI Agent</button>
+<p id="result" aria-live="polite"></p>
+</section>
+<section>
+<h2>Course Progress</h2>
+<p id="progress">Complete the lesson, lab, and assessment.</p>
+<button id="reset">Reset Progress</button>
+</section>
+</main>
+<script>
+(function(){
+"use strict";
+var done={lesson:false,lab:false,quiz:false};
+try{
+var saved=JSON.parse(localStorage.getItem("ngsa101"));
+if(saved&&typeof saved==="object"){
+done.lesson=!!saved.lesson;
+done.lab=!!saved.lab;
+done.quiz=!!saved.quiz;
+}
+}catch(e){}
+function el(id){return document.getElementById(id)}
+function update(){
+var n=Number(done.lesson)+Number(done.lab)+Number(done.quiz);
+el("progress").textContent=n+"/3 activities completed"+(n===3?" — Course complete!":"");
+try{localStorage.setItem("ngsa101",JSON.stringify(done))}catch(e){}
+}
+el("play").addEventListener("click",function(){
+el("lesson").textContent="Step 1: Receive a resource service request. Step 2: Route the request through the event bus and domain supervisor. Step 3: The AI agent recommends an action. Step 4: Deterministic controls enforce policy. Step 5: A human approves execution.";
+done.lesson=true;update();
+});
+el("run").addEventListener("click",function(){
+var code=el("code").value;
+var ok=/request\s*=\s*["']inventory["']/.test(code)&&/status\s*=\s*["']pending["']/.test(code)&&/print\s*\(\s*request\s*\)/.test(code)&&/print\s*\(\s*status\s*\)/.test(code);
+el("output").textContent=ok?"PASS: Inventory request and pending status validated.":"Not yet passing. Define request as inventory, status as pending, and print both variables.";
+if(ok){done.lab=true;update()}
+});
+el("human").addEventListener("click",function(){
+el("result").textContent="Correct! Humans retain final operational authority.";
+done.quiz=true;update();
+});
+el("agent").addEventListener("click",function(){
+el("result").textContent="Try again. AI recommends actions, but humans retain authority.";
+});
+el("reset").addEventListener("click",function(){
+done={lesson:false,lab:false,quiz:false};
+el("lesson").textContent="Ready to begin.";
+el("output").textContent="";
+el("result").textContent="";
+update();
+});
+update();
+})();
+</script>
+</body>
+</html>
