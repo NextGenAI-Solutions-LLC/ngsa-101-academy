@@ -3,100 +3,151 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NGSA-101 | NextGenAI SIS Academy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NextGenAI SIS Academy</title>
 <style>
-body{margin:0;background:#0b1424;color:#eef4ff;font:16px system-ui,sans-serif}
-header,main{padding:20px;max-width:720px;margin:auto}
-header{border-bottom:2px solid #19b9e7}
-h1{font-size:26px}
-section{background:#18263b;padding:18px;border-radius:12px;margin:16px 0}
-button{background:#19b9e7;color:#071320;border:0;border-radius:8px;padding:13px;margin:5px 5px 5px 0;font-weight:bold;cursor:pointer}
-textarea{box-sizing:border-box;width:100%;height:145px;background:#08111f;color:#b8f7d0;border:1px solid #65758b;border-radius:8px;padding:12px;font:14px monospace}
-pre{white-space:pre-wrap}
-small{color:#afc1d6}
+body{margin:0;background:#09141e;color:white;font-family:Arial,sans-serif;padding:18px}
+main{max-width:720px;margin:auto}
+h1{color:#55c8e5;font-size:23px}
+.card{background:#142a3b;padding:20px;border-radius:14px;min-height:260px}
+h2{color:#fff;font-size:23px}
+p,li{line-height:1.6}
+button{background:#55c8e5;color:#06131b;border:0;border-radius:9px;padding:13px;font-size:16px;font-weight:bold;margin:5px 3px;cursor:pointer}
+button:disabled{opacity:.4}
+#caption{color:#c4d9e5;margin-top:15px}
+#status{color:#9fb7c7;font-size:14px}
 </style>
 </head>
 <body>
-<header>
-<h1>NextGenAI SIS Academy</h1>
-<p>NGSA-101 | AI Systems Operations</p>
-</header>
 <main>
-<section>
-<h2>Lesson 1: AI Agent Operations</h2>
-<p>Learn how an AI agent receives a resource request, recommends an action, and waits for human approval.</p>
-<button id="play">▶ Play Lesson</button>
-<p id="lesson">Ready to begin.</p>
-</section>
-<section>
-<h2>Python Lab 1</h2>
-<p>Create a resource request using Python.</p>
-<small>Try editing the code below.</small>
-<textarea id="code" spellcheck="false">request = "inventory"
-status = "pending"
-print(request)
-print(status)</textarea>
-<button id="run">Run Lab Check</button>
-<pre id="output" aria-live="polite"></pre>
-</section>
-<section>
-<h2>Knowledge Assessment</h2>
-<p>Who has final authority to approve an AI agent's operational action?</p>
-<button id="human">Human Operator</button>
-<button id="agent">AI Agent</button>
-<p id="result" aria-live="polite"></p>
-</section>
-<section>
-<h2>Course Progress</h2>
-<p id="progress">Complete the lesson, lab, and assessment.</p>
-<button id="reset">Reset Progress</button>
-</section>
+<h1>NextGenAI Solutions Academy</h1>
+<p>SIS Supply Chain & Inventory Management</p>
+<div class="card">
+<p id="status">Scene 1</p>
+<h2 id="title"></h2>
+<div id="lesson"></div>
+<p id="caption">AI Narrator Ready</p>
+</div>
+<button id="prev">◀ Previous</button>
+<button id="play">▶ Play</button>
+<button id="next">Next ▶</button>
+<p id="result"></p>
 </main>
+
 <script>
-(function(){
-"use strict";
-var done={lesson:false,lab:false,quiz:false};
-try{
-var saved=JSON.parse(localStorage.getItem("ngsa101"));
-if(saved&&typeof saved==="object"){
-done.lesson=!!saved.lesson;
-done.lab=!!saved.lab;
-done.quiz=!!saved.quiz;
+const scenes=[
+{
+title:"Mission Briefing",
+text:"Welcome to SIS Supply Chain and Inventory Management. Learn how intelligent systems support supply operations while humans retain authority."
+},
+{
+title:"Resource Service Requests",
+text:"Operators submit requests for inventory, equipment, and services. The booking engine validates availability, priority, and authorization."
+},
+{
+title:"Multi-Agent Architecture",
+text:"The event bus distributes requests. A master orchestrator routes work to the supply domain supervisor, inventory agent, forecasting agent, and approval gateway."
+},
+{
+title:"Inventory Intelligence",
+text:"Inventory agents monitor stock levels, detect shortages, recommend replenishment, and prepare service requests for human review."
+},
+{
+title:"Human Approval",
+text:"AI recommends an inventory replenishment. Deterministic controls enforce policy. A human approves or rejects execution.",
+quiz:true
+},
+{
+title:"Engineering Assessment",
+text:"Demonstrate an inventory request, identify the responsible agents, record an approval decision, and document the simulated operational outcome."
 }
-}catch(e){}
-function el(id){return document.getElementById(id)}
-function update(){
-var n=Number(done.lesson)+Number(done.lab)+Number(done.quiz);
-el("progress").textContent=n+"/3 activities completed"+(n===3?" — Course complete!":"");
-try{localStorage.setItem("ngsa101",JSON.stringify(done))}catch(e){}
+];
+
+let index=0;
+let speaking=false;
+const el=id=>document.getElementById(id);
+
+function stopVoice(){
+if("speechSynthesis" in window){
+speechSynthesis.cancel();
 }
-el("play").addEventListener("click",function(){
-el("lesson").textContent="Step 1: Receive a resource service request. Step 2: Route the request through the event bus and domain supervisor. Step 3: The AI agent recommends an action. Step 4: Deterministic controls enforce policy. Step 5: A human approves execution.";
-done.lesson=true;update();
-});
-el("run").addEventListener("click",function(){
-var code=el("code").value;
-var ok=/request\s*=\s*["']inventory["']/.test(code)&&/status\s*=\s*["']pending["']/.test(code)&&/print\s*\(\s*request\s*\)/.test(code)&&/print\s*\(\s*status\s*\)/.test(code);
-el("output").textContent=ok?"PASS: Inventory request and pending status validated.":"Not yet passing. Define request as inventory, status as pending, and print both variables.";
-if(ok){done.lab=true;update()}
-});
-el("human").addEventListener("click",function(){
-el("result").textContent="Correct! Humans retain final operational authority.";
-done.quiz=true;update();
-});
-el("agent").addEventListener("click",function(){
-el("result").textContent="Try again. AI recommends actions, but humans retain authority.";
-});
-el("reset").addEventListener("click",function(){
-done={lesson:false,lab:false,quiz:false};
-el("lesson").textContent="Ready to begin.";
-el("output").textContent="";
+speaking=false;
+el("play").textContent="▶ Play";
+}
+
+function render(){
+const s=scenes[index];
+el("title").textContent=s.title;
+el("status").textContent=
+"Scene "+(index+1)+" of "+scenes.length;
+el("lesson").textContent=s.text;
+el("caption").textContent="AI Narrator Ready";
 el("result").textContent="";
-update();
-});
-update();
-})();
+el("prev").disabled=index===0;
+el("next").disabled=index===scenes.length-1;
+
+if(s.quiz){
+const approve=document.createElement("button");
+approve.textContent="Approve Request";
+approve.onclick=()=>decision("Approved");
+const reject=document.createElement("button");
+reject.textContent="Reject Request";
+reject.onclick=()=>decision("Rejected");
+el("lesson").append(approve,reject);
+}
+}
+
+function decision(choice){
+el("result").textContent=
+"Simulation: Request "+choice+
+". Decision recorded locally for this exercise.";
+}
+
+function changeScene(direction){
+stopVoice();
+index=Math.max(0,Math.min(scenes.length-1,index+direction));
+render();
+}
+
+function playVoice(){
+if(speaking){
+stopVoice();
+return;
+}
+const s=scenes[index];
+el("caption").textContent=s.text;
+
+if(!("speechSynthesis" in window)){
+el("result").textContent=
+"Speech unavailable. Read the captions.";
+return;
+}
+
+stopVoice();
+const voice=new SpeechSynthesisUtterance(
+s.title+". "+s.text
+);
+voice.rate=0.9;
+voice.onend=()=>{
+speaking=false;
+el("play").textContent="▶ Play";
+};
+voice.onerror=()=>{
+speaking=false;
+el("play").textContent="▶ Play";
+el("result").textContent=
+"Narration unavailable on this device.";
+};
+speaking=true;
+el("play").textContent="■ Stop";
+speechSynthesis.speak(voice);
+}
+
+el("prev").onclick=()=>changeScene(-1);
+el("next").onclick=()=>changeScene(1);
+el("play").onclick=playVoice;
+
+render();
 </script>
 </body>
 </html>
