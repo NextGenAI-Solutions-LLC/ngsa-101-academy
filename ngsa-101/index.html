@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,106 +6,337 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NextGenAI SIS Academy</title>
 <style>
-body{margin:0;background:#09141e;color:white;font-family:Arial,sans-serif;padding:18px}
-main{max-width:720px;margin:auto}
-h1{color:#55c8e5;font-size:23px}
-.card{background:#142a3b;padding:20px;border-radius:14px;min-height:260px}
-h2{color:#fff;font-size:23px}
+*{box-sizing:border-box}
+body{
+margin:0;padding:16px;
+background:#09131e;color:#eef5fa;
+font-family:system-ui,Arial,sans-serif
+}
+main{max-width:800px;margin:auto}
+header{padding:10px 0}
+.brand{color:#55c8e5;font-size:13px;font-weight:800}
+h1{font-size:25px}
+h2{font-size:23px}
+h3{color:#6dd3e8}
 p,li{line-height:1.6}
-button{background:#55c8e5;color:#06131b;border:0;border-radius:9px;padding:13px;font-size:16px;font-weight:bold;margin:5px 3px;cursor:pointer}
-button:disabled{opacity:.4}
-#caption{color:#c4d9e5;margin-top:15px}
-#status{color:#9fb7c7;font-size:14px}
+.stage{
+background:#122a3a;
+border:1px solid #315164;
+border-radius:16px;
+padding:18px
+}
+.meta{color:#73d4e8;font-size:13px}
+.instructor{
+display:flex;align-items:center;gap:15px;
+background:#0b202d;padding:14px;
+border-radius:12px;margin:15px 0
+}
+.avatar{
+width:85px;height:105px;flex-shrink:0;
+background:linear-gradient(#26516b,#142d42);
+border-radius:12px;display:flex;
+align-items:center;justify-content:center
+}
+.face{
+width:49px;height:62px;
+background:#c99272;
+border-radius:45%;
+position:relative
+}
+.hair{
+position:absolute;top:-7px;left:-4px;
+width:57px;height:25px;
+background:#39251e;border-radius:60%
+}
+.eyes{
+position:absolute;top:29px;left:10px;
+width:29px;height:5px;
+border-left:5px solid #222;
+border-right:5px solid #222
+}
+.mouth{
+position:absolute;bottom:13px;left:17px;
+width:16px;height:3px;
+background:#793b38;border-radius:50%
+}
+.talking .mouth{
+animation:talk .3s infinite alternate
+}
+@keyframes talk{
+from{height:2px}
+to{height:12px}
+}
+.caption{color:#c2d8e3;font-size:14px}
+.controls{display:flex;gap:8px;margin:15px 0}
+button{
+font:700 15px system-ui;
+background:#53c5df;color:#08141c;
+border:0;border-radius:9px;
+padding:12px;cursor:pointer;
+touch-action:manipulation
+}
+.controls button{flex:1}
+button:disabled{opacity:.35}
+.secondary{background:#243f50;color:white}
+.panel{
+background:#0c202e;
+border:1px solid #315164;
+border-radius:10px;
+padding:13px;margin:12px 0
+}
+.agent{
+padding:10px;margin:7px 0;
+border-left:3px solid #55c8e5;
+background:#172f40
+}
+.flow{display:flex;flex-wrap:wrap;gap:6px}
+.node{
+padding:8px;background:#23485c;
+border-radius:7px;font-size:12px
+}
+input,select{
+width:100%;padding:12px;
+background:#091b29;color:white;
+border:1px solid #507083;
+border-radius:8px;font-size:16px;
+margin:6px 0 12px
+}
+.feedback{color:#8de7b1}
+.warning{color:#f3bd70}
+pre{white-space:pre-wrap;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
 <main>
-<h1>NextGenAI Solutions Academy</h1>
-<p>SIS Supply Chain & Inventory Management</p>
-<div class="card">
-<p id="status">Scene 1</p>
+<header>
+<div class="brand">NEXTGENAI SOLUTIONS ACADEMY</div>
+<h1>SIS Supply Chain & Inventory Management</h1>
+<p>SuperIntelligent Systems Operator Training</p>
+</header>
+
+<section class="stage">
+<div class="meta" id="counter"></div>
 <h2 id="title"></h2>
-<div id="lesson"></div>
-<p id="caption">AI Narrator Ready</p>
+
+<div class="instructor">
+<div class="avatar" id="avatar">
+<div class="face">
+<div class="hair"></div>
+<div class="eyes"></div>
+<div class="mouth"></div>
 </div>
-<button id="prev">◀ Previous</button>
+</div>
+<div>
+<strong>AI Instructor</strong>
+<div class="caption" id="caption">
+Ready to begin.
+</div>
+</div>
+</div>
+
+<div id="lesson"></div>
+</section>
+
+<div class="controls">
+<button class="secondary" id="prev">◀ Prev</button>
 <button id="play">▶ Play</button>
-<button id="next">Next ▶</button>
-<p id="result"></p>
+<button class="secondary" id="next">Next ▶</button>
+</div>
+
+<div class="panel">
+<div id="progress"></div>
+<div id="feedback" class="feedback"></div>
+</div>
 </main>
 
 <script>
-const scenes=[
+const lessons=[
 {
 title:"Mission Briefing",
-text:"Welcome to SIS Supply Chain and Inventory Management. Learn how intelligent systems support supply operations while humans retain authority."
+say:"Welcome to NextGenAI Solutions Academy. You will learn how intelligent systems support supply chain operations while human operators retain authority.",
+html:`
+<h3>Mission Objectives</h3>
+<ul>
+<li>Manage inventory and supply requests.</li>
+<li>Understand multi-agent orchestration.</li>
+<li>Operate the Resource Service Requests and Booking Engine.</li>
+<li>Interpret supply readiness information.</li>
+<li>Approve or reject operational actions.</li>
+</ul>`
 },
 {
-title:"Resource Service Requests",
-text:"Operators submit requests for inventory, equipment, and services. The booking engine validates availability, priority, and authorization."
+title:"SIS Operating Architecture",
+say:"The system separates intelligent recommendations from deterministic execution. Requests travel through the booking engine, event bus, master orchestrator, domain supervisor, and specialist agents.",
+html:`
+<h3>Architecture Layers</h3>
+<div class="flow">
+<span class="node">Operator</span>
+<span class="node">Booking Engine</span>
+<span class="node">Event Bus</span>
+<span class="node">Master Orchestrator</span>
+<span class="node">Supply Supervisor</span>
+<span class="node">AI Agents</span>
+<span class="node">Human Approval</span>
+</div>
+<div class="panel">
+<p>AI recommends and scales execution.</p>
+<p>Deterministic systems enforce controls.</p>
+<p>Engineering ensures trust.</p>
+<p>Humans retain authority.</p>
+</div>`
 },
 {
-title:"Multi-Agent Architecture",
-text:"The event bus distributes requests. A master orchestrator routes work to the supply domain supervisor, inventory agent, forecasting agent, and approval gateway."
+title:"Resource Service Requests / Booking Engine",
+say:"The booking engine receives structured requests for equipment, materials, and services. It validates the request before publishing an event.",
+html:`
+<h3>Operator Exercise</h3>
+<label>Requested Resource</label>
+<select id="resource">
+<option>Printer filament</option>
+<option>Maintenance kit</option>
+<option>Field equipment</option>
+</select>
+<label>Quantity</label>
+<input id="qty" type="number" min="1" max="100" value="3">
+<button onclick="submitRequest()">Submit Request</button>
+<div id="requestResult" class="panel">
+Awaiting request.
+</div>`
 },
 {
-title:"Inventory Intelligence",
-text:"Inventory agents monitor stock levels, detect shortages, recommend replenishment, and prepare service requests for human review."
+title:"Event Bus and Orchestration",
+say:"The event bus distributes events. The master orchestrator routes work to domain supervisors. The supply supervisor coordinates inventory and forecasting agents.",
+html:`
+<h3>Event-Driven Workflow</h3>
+<div class="flow">
+<span class="node">Request</span>
+<span class="node">Event Bus</span>
+<span class="node">Orchestrator</span>
+<span class="node">Supervisor</span>
+<span class="node">Agent</span>
+</div>
+<pre class="panel">{
+ "event": "resource.request.created",
+ "status": "pending"
+}</pre>`
 },
 {
-title:"Human Approval",
-text:"AI recommends an inventory replenishment. Deterministic controls enforce policy. A human approves or rejects execution.",
-quiz:true
+title:"Specialist Supply Chain Agents",
+say:"Specialist agents cooperate. Inventory agents monitor stock. Forecasting agents estimate demand. Readiness agents evaluate availability. Procurement agents recommend replenishment.",
+html:`
+<div class="agent"><b>Inventory Agent</b>
+<p>Tracks stock and shortages.</p></div>
+<div class="agent"><b>Forecasting Agent</b>
+<p>Estimates future demand.</p></div>
+<div class="agent"><b>Readiness Agent</b>
+<p>Evaluates resource availability.</p></div>
+<div class="agent"><b>Procurement Agent</b>
+<p>Recommends replenishment.</p></div>
+<div class="agent"><b>Approval Gateway</b>
+<p>Enforces human authorization.</p></div>`
 },
 {
-title:"Engineering Assessment",
-text:"Demonstrate an inventory request, identify the responsible agents, record an approval decision, and document the simulated operational outcome."
+title:"Inventory Intelligence Laboratory",
+say:"Analyze inventory using a reorder threshold. This exercise uses deterministic rules rather than a trained machine learning model.",
+html:`
+<h3>Inventory Simulator</h3>
+<label>Available Stock</label>
+<input id="stock" type="number" value="12" min="0">
+<label>Reorder Threshold</label>
+<input id="threshold" type="number" value="20" min="0">
+<button onclick="analyzeStock()">Analyze Inventory</button>
+<div id="stockResult" class="panel">
+Awaiting analysis.
+</div>`
+},
+{
+title:"Human-in-the-Loop Approval",
+say:"AI proposes an action, but an authorized human must approve execution. Rejected or unanswered requests do not execute.",
+html:`
+<h3>Replenishment Recommendation</h3>
+<p>Agent recommends ordering 15 maintenance kits.</p>
+<button onclick="approval('APPROVED')">Approve</button>
+<button class="secondary" onclick="approval('REJECTED')">Reject</button>
+<div id="approvalResult" class="panel">
+PENDING APPROVAL
+</div>`
+},
+{
+title:"DDIL Supply Operations",
+say:"Disconnected, degraded, intermittent, and limited communications require resilient edge operations. Local systems can queue events and synchronize later.",
+html:`
+<h3>DDIL Simulation</h3>
+<p>Test a disconnected operating environment.</p>
+<button onclick="simulateDDIL()">Simulate Network Loss</button>
+<div id="ddilResult" class="panel">
+Network: Connected
+</div>`
+},
+{
+title:"Knowledge Assessment",
+say:"Which component routes requests to the appropriate domain supervisor?",
+html:`
+<h3>Which component routes requests?</h3>
+<button onclick="quiz(false)">Inventory Database</button>
+<button onclick="quiz(true)">Master Orchestrator</button>
+<button onclick="quiz(false)">3D Printer</button>
+<div id="quizResult" class="panel">
+Choose your answer.
+</div>`
+},
+{
+title:"Operator Qualification",
+say:"Your final assessment requires demonstrating a resource request, inventory analysis, approval decision, and understanding of the system architecture.",
+html:`
+<h3>Required Deliverables</h3>
+<ul>
+<li>Submit a resource request.</li>
+<li>Explain the event bus.</li>
+<li>Identify specialist agents.</li>
+<li>Analyze inventory readiness.</li>
+<li>Demonstrate human approval.</li>
+<li>Explain DDIL behavior.</li>
+<li>Document test results.</li>
+</ul>
+<p class="warning">
+Instructor review is required for qualification.
+</p>
+<button onclick="finishCourse()">Complete Preview</button>
+<div id="finishResult"></div>`
 }
 ];
 
-let index=0;
+let current=0;
 let speaking=false;
-const el=id=>document.getElementById(id);
+let utterance=null;
+const $=id=>document.getElementById(id);
 
 function stopVoice(){
 if("speechSynthesis" in window){
 speechSynthesis.cancel();
 }
 speaking=false;
-el("play").textContent="▶ Play";
+$("avatar").classList.remove("talking");
+$("play").textContent="▶ Play";
 }
 
 function render(){
-const s=scenes[index];
-el("title").textContent=s.title;
-el("status").textContent=
-"Scene "+(index+1)+" of "+scenes.length;
-el("lesson").textContent=s.text;
-el("caption").textContent="AI Narrator Ready";
-el("result").textContent="";
-el("prev").disabled=index===0;
-el("next").disabled=index===scenes.length-1;
-
-if(s.quiz){
-const approve=document.createElement("button");
-approve.textContent="Approve Request";
-approve.onclick=()=>decision("Approved");
-const reject=document.createElement("button");
-reject.textContent="Reject Request";
-reject.onclick=()=>decision("Rejected");
-el("lesson").append(approve,reject);
-}
+const s=lessons[current];
+$("counter").textContent=
+"LESSON "+(current+1)+" OF "+lessons.length;
+$("title").textContent=s.title;
+$("lesson").innerHTML=s.html;
+$("caption").textContent="Tap Play for narration.";
+$("progress").textContent=
+"Scene "+(current+1)+" of "+lessons.length;
+$("feedback").textContent="";
+$("prev").disabled=current===0;
+$("next").disabled=current===lessons.length-1;
 }
 
-function decision(choice){
-el("result").textContent=
-"Simulation: Request "+choice+
-". Decision recorded locally for this exercise.";
-}
-
-function changeScene(direction){
+function changeScene(n){
 stopVoice();
-index=Math.max(0,Math.min(scenes.length-1,index+direction));
+current=Math.max(0,Math.min(lessons.length-1,current+n));
 render();
 }
 
@@ -115,38 +345,91 @@ if(speaking){
 stopVoice();
 return;
 }
-const s=scenes[index];
-el("caption").textContent=s.text;
+const s=lessons[current];
+$("caption").textContent=s.say;
 
 if(!("speechSynthesis" in window)){
-el("result").textContent=
-"Speech unavailable. Read the captions.";
+$("feedback").textContent=
+"Speech unavailable. Read the caption.";
 return;
 }
 
 stopVoice();
-const voice=new SpeechSynthesisUtterance(
-s.title+". "+s.text
+utterance=new SpeechSynthesisUtterance(
+s.title+". "+s.say
 );
-voice.rate=0.9;
-voice.onend=()=>{
+utterance.rate=.9;
+utterance.onend=function(){
 speaking=false;
-el("play").textContent="▶ Play";
+$("avatar").classList.remove("talking");
+$("play").textContent="▶ Play";
 };
-voice.onerror=()=>{
+utterance.onerror=function(){
 speaking=false;
-el("play").textContent="▶ Play";
-el("result").textContent=
-"Narration unavailable on this device.";
+$("avatar").classList.remove("talking");
+$("play").textContent="▶ Play";
+$("feedback").textContent="Narration unavailable.";
 };
 speaking=true;
-el("play").textContent="■ Stop";
-speechSynthesis.speak(voice);
+$("avatar").classList.add("talking");
+$("play").textContent="■ Stop";
+speechSynthesis.speak(utterance);
 }
 
-el("prev").onclick=()=>changeScene(-1);
-el("next").onclick=()=>changeScene(1);
-el("play").onclick=playVoice;
+function submitRequest(){
+const qty=Number($("qty").value);
+const resource=$("resource").value;
+if(!Number.isInteger(qty)||qty<1||qty>100){
+$("requestResult").textContent=
+"Enter a quantity between 1 and 100.";
+return;
+}
+$("requestResult").textContent=
+"SIMULATED REQUEST: "+qty+" units of "+
+resource+". Status: Pending approval.";
+}
+
+function analyzeStock(){
+const stock=Number($("stock").value);
+const threshold=Number($("threshold").value);
+if(!Number.isFinite(stock)||
+!Number.isFinite(threshold)||
+stock<0||threshold<0){
+$("stockResult").textContent="Enter valid stock values.";
+return;
+}
+$("stockResult").textContent=
+stock<threshold
+?"LOW STOCK: Recommend replenishment."
+:"STOCK READY: No replenishment required.";
+}
+
+function approval(decision){
+$("approvalResult").textContent=
+"SIMULATION: "+decision+
+". Decision recorded for this exercise.";
+}
+
+function simulateDDIL(){
+$("ddilResult").textContent=
+"Network: DISCONNECTED. Events queued locally. Human approval remains required.";
+}
+
+function quiz(correct){
+$("quizResult").textContent=
+correct
+?"Correct. The master orchestrator routes requests."
+:"Incorrect. Try again.";
+}
+
+function finishCourse(){
+$("finishResult").textContent=
+"Training preview completed. Instructor review and documented deliverables are still required.";
+}
+
+$("prev").onclick=()=>changeScene(-1);
+$("next").onclick=()=>changeScene(1);
+$("play").onclick=playVoice;
 
 render();
 </script>
